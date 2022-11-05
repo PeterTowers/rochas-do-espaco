@@ -65,6 +65,8 @@ class Spaceship(GameObject):
 
 
 class Asteroid(GameObject):
+    MASSA = 3000
+
     def __init__(self, position, create_asteroid_callback, size=3):
         self.create_asteroid_callback = create_asteroid_callback
 

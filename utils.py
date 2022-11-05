@@ -8,7 +8,7 @@ from pygame.math import Vector2
 from pygame.mixer import Sound
 
 def load_sprite(name, with_alpha=True):
-    p = Path(f"asteroides/assets/sprites/{name}.png")
+    p = Path(f"rochas-do-espaco/assets/sprites/{name}.png")
     loaded_sprite = load(p)
 
     if with_alpha:
@@ -36,7 +36,7 @@ def get_random_velocity(min_speed, max_speed):
 
 
 def load_sound(name):
-    return (Sound(Path(f"asteroides/assets/sounds/{name}.wav")))
+    return (Sound(Path(f"rochas-do-espaco/assets/sounds/{name}.wav")))
 
 
 def print_text(surface, text, font, color=Color('tomato')):

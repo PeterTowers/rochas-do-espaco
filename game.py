@@ -4,7 +4,8 @@ from utils import get_random_position, load_sprite, print_text
 from models import GameObject, Spaceship, Asteroid
 
 class SpaceRocks:
-    MIN_ASTEROID_DISTANCE = 250
+    DISTANCIA_MIN_ASTER_NAVE = 250
+    DISTANCIA_MIN_ASTER_ASTER = 100
 
     def __init__(self):
         self._init_pygame()
@@ -21,8 +22,20 @@ class SpaceRocks:
         for _ in range(6):
             while True:
                 position = get_random_position(self.screen)
-                if position.distance_to(self.spaceship.position) > self.MIN_ASTEROID_DISTANCE:
-                    break
+                if position.distance_to(self.spaceship.position) > self.DISTANCIA_MIN_ASTER_NAVE:
+                    if self.asteroids:
+                        flag = True
+
+                        for asteroide in self.asteroids:
+                            if position.distance_to(asteroide.position) < self.DISTANCIA_MIN_ASTER_ASTER:
+                                flag = False
+                                break
+
+                        if flag:
+                            break
+
+                    else:
+                        break
 
             self.asteroids.append(Asteroid(position, self.asteroids.append))
 
@@ -77,9 +90,10 @@ class SpaceRocks:
         if self.spaceship:
             for asteroid in self.asteroids:
                 if asteroid.collides_with(self.spaceship):
-                    self.spaceship = None
-                    self.message = "You lost! Press R to respawn."
-                    break
+                    # self.spaceship = None
+                    # self.message = "You lost! Press R to respawn."
+                    # break
+                    pass
 
         for bullet in self.bullets[:]:
             for asteroid in self.asteroids[:]:
@@ -95,6 +109,8 @@ class SpaceRocks:
 
         if not self.asteroids and self.spaceship:
             self.message = "You won!"
+
+        print(self.spaceship.direction)
 
 
     def _get_game_objects(self):
