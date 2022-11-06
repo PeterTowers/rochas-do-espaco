@@ -1,7 +1,7 @@
 import pygame
 
 from utils import gerar_posicao_aleatoria, carregar_sprite, imprimir_texto
-from models import GameObject, Spaceship, Asteroid
+from models import GameObject, NaveEspacial, asteroidee
 
 class SpaceRocks:
     DISTANCIA_MIN_ASTER_NAVE = 250
@@ -11,23 +11,23 @@ class SpaceRocks:
         self._init_pygame()
         self.screen = pygame.display.set_mode((800, 600))
         self.background = carregar_sprite("space", False)
-        self.clock = pygame.time.Clock()
+        self.relogio = pygame.time.Clock()
         self.font = pygame.font.Font(None, 64)
-        self.message = ""
+        self.mensagem = ""
 
-        self.asteroids = []
-        self.bullets = []
-        self.spaceship = Spaceship((400, 300), self.bullets.append)
+        self.asteroides = []
+        self.balas = []
+        self.naveEspacial = NaveEspacial((400, 300), self.balas.append)
 
         for _ in range(6):
             while True:
-                position = gerar_posicao_aleatoria(self.screen)
-                if position.distance_to(self.spaceship.position) > self.DISTANCIA_MIN_ASTER_NAVE:
-                    if self.asteroids:
+                posicao = gerar_posicao_aleatoria(self.screen)
+                if posicao.distancia_to(self.naveEspacial.posicao) > self.DISTANCIA_MIN_ASTER_NAVE:
+                    if self.asteroides:
                         flag = True
 
-                        for asteroide in self.asteroids:
-                            if position.distance_to(asteroide.position) < self.DISTANCIA_MIN_ASTER_ASTER:
+                        for asteroidee in self.asteroides:
+                            if posicao.distancia_to(asteroidee.posicao) < self.DISTANCIA_MIN_ASTER_ASTER:
                                 flag = False
                                 break
 
@@ -37,7 +37,7 @@ class SpaceRocks:
                     else:
                         break
 
-            self.asteroids.append(Asteroid(position, self.asteroids.append))
+            self.asteroides.append(asteroidee(posicao, self.asteroides.append))
 
 
     def main_loop(self):
@@ -60,64 +60,64 @@ class SpaceRocks:
             ):
                 quit()
             elif (
-                self.spaceship
+                self.naveEspacial
                 and event.type == pygame.KEYDOWN
                 and event.key == pygame.K_SPACE
             ):
-                self.spaceship.shoot()
+                self.naveEspacial.shoot()
         
         is_key_pressed = pygame.key.get_pressed()
 
-        if self.spaceship:
+        if self.naveEspacial:
             # Rotacao
             if is_key_pressed[pygame.K_RIGHT]:
-                self.spaceship.rotate(clockwise=True)
+                self.naveEspacial.rotacao(relogiowise=True)
             elif is_key_pressed[pygame.K_LEFT]:
-                self.spaceship.rotate(clockwise=False)
+                self.naveEspacial.rotacao(relogiowise=False)
 
             # Aceleracao
             if is_key_pressed[pygame.K_UP]:
-                self.spaceship.accelerate()
+                self.naveEspacial.aceleracao()
 
-        if is_key_pressed[pygame.K_r] and not self.spaceship:
+        if is_key_pressed[pygame.K_r] and not self.naveEspacial:
             self.__init__()
 
 
     def _process_game_logic(self):
         for game_object in self._get_game_objects():
-            game_object.move(self.screen)
+            game_object.movimento(self.screen)
 
-        if self.spaceship:
-            for asteroid in self.asteroids:
-                if asteroid.collides_with(self.spaceship):
-                    # self.spaceship = None
-                    # self.message = "You lost! Press R to respawn."
+        if self.naveEspacial:
+            for asteroide in self.asteroides:
+                if asteroide.collides_with(self.naveEspacial):
+                    # self.naveEspacial = None
+                    # self.mensagem = "You lost! Press R to respawn."
                     # break
                     pass
 
-        for bullet in self.bullets[:]:
-            for asteroid in self.asteroids[:]:
-                if asteroid.collides_with(bullet):
-                    self.asteroids.remove(asteroid)
-                    self.bullets.remove(bullet)
-                    asteroid.split()
+        for bala in self.balas[:]:
+            for asteroide in self.asteroides[:]:
+                if asteroide.collides_with(bala):
+                    self.asteroides.remove(asteroide)
+                    self.balas.remove(bala)
+                    asteroide.split()
                     break
 
-        for bullet in self.bullets[:]:
-            if not self.screen.get_rect().collidepoint(bullet.position):
-                self.bullets.remove(bullet)
+        for bala in self.balas[:]:
+            if not self.screen.get_rect().collidepoint(bala.posicao):
+                self.balas.remove(bala)
 
-        if not self.asteroids and self.spaceship:
-            self.message = "You won!"
+        if not self.asteroides and self.naveEspacial:
+            self.mensagem = "You won!"
 
-        print(self.spaceship.direction)
+        print(self.naveEspacial.direction)
 
 
     def _get_game_objects(self):
-        game_objects = [*self.asteroids, *self.bullets]
+        game_objects = [*self.asteroides, *self.balas]
 
-        if self.spaceship:
-            game_objects.append(self.spaceship)
+        if self.naveEspacial:
+            game_objects.append(self.naveEspacial)
 
         return game_objects
 
@@ -128,9 +128,9 @@ class SpaceRocks:
         for game_object in self._get_game_objects():
             game_object.draw(self.screen)
 
-        if self.message:
-            imprimir_texto(self.screen, self.message, self.font)
+        if self.mensagem:
+            imprimir_texto(self.screen, self.mensagem, self.font)
         
         pygame.display.flip()
-        self.clock.tick(60)
+        self.relogio.tick(60)
 

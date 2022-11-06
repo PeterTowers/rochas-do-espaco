@@ -16,14 +16,14 @@ class GameObject:
         blit_posicao = self.posicao - Vector2(self.radius)
         superficie.blit(self.sprite, blit_posicao)
 
-    def move(self):
+    def movimento(self):
         self.posicao = self.posicao + self.velocidade
 
     def collides_with(self, outro_obj):
         distancia = self.posicao.distancia(outro_obj.posicao)
         return distancia < self.radius + outro_obj.radius
 
-    def move(self, superficie):
+    def movimento(self, superficie):
         self.posicao = wrap_posicao(self.posicao + self.velocidade, superficie)
 
 
@@ -53,7 +53,7 @@ class NaveEspacial(GameObject):
         superficie.blit(rotacaod_superficie, blit_posicao)
 
 
-    def accelerate(self):
+    def aceleracao(self):
         self.velocidade += self.direcao * self.ACELERACAO
 
     
@@ -89,5 +89,5 @@ class Tiro(GameObject):
     def __init__(self, posicao, velocidade):
         super().__init__(posicao, carregar_sprite('bullet'), velocidade)
 
-    def move(self, superficie):
+    def movimento(self, superficie):
         self.posicao = self.posicao + self.velocidade
