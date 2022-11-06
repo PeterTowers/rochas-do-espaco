@@ -1,6 +1,6 @@
 import pygame
 
-from utils import get_random_position, load_sprite, print_text
+from utils import gerar_posicao_aleatoria, carregar_sprite, imprimir_texto
 from models import GameObject, Spaceship, Asteroid
 
 class SpaceRocks:
@@ -10,7 +10,7 @@ class SpaceRocks:
     def __init__(self):
         self._init_pygame()
         self.screen = pygame.display.set_mode((800, 600))
-        self.background = load_sprite("space", False)
+        self.background = carregar_sprite("space", False)
         self.clock = pygame.time.Clock()
         self.font = pygame.font.Font(None, 64)
         self.message = ""
@@ -21,7 +21,7 @@ class SpaceRocks:
 
         for _ in range(6):
             while True:
-                position = get_random_position(self.screen)
+                position = gerar_posicao_aleatoria(self.screen)
                 if position.distance_to(self.spaceship.position) > self.DISTANCIA_MIN_ASTER_NAVE:
                     if self.asteroids:
                         flag = True
@@ -129,7 +129,7 @@ class SpaceRocks:
             game_object.draw(self.screen)
 
         if self.message:
-            print_text(self.screen, self.message, self.font)
+            imprimir_texto(self.screen, self.message, self.font)
         
         pygame.display.flip()
         self.clock.tick(60)
