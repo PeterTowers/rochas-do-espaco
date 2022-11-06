@@ -1,3 +1,4 @@
+import math
 import random
 
 from pathlib import Path
@@ -46,3 +47,11 @@ def print_text(surface, text, font, color=Color('tomato')):
     rect.center = Vector2(surface.get_size()) / 2
 
     surface.blit(text_surface, rect)
+
+def colisao(asteroide1, asteroide2):
+    theta = math.atan2(asteroide1.position.y - asteroide2.position.y, asteroide1.position.x - asteroide2.position.x)
+
+    angulo1 = 2 * tan - math.atan2(asteroide1.position.y, asteroide1.position.x)
+    angulo2 = 2 * tan - math.atan2(asteroide2.position.y, asteroide2.position.x)
+
+        
