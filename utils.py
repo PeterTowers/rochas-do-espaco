@@ -19,7 +19,7 @@ def carregar_sprite(nome, with_alpha=True):
 
 
 # Faz um elemento sair de um lado da tela e aparecer no outro
-def wrap_position(posicao, superficie):
+def wrap_posicao(posicao, superficie):
     x, y = posicao
     w, h = superficie.get_size()
 

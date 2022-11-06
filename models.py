@@ -1,7 +1,7 @@
 from pygame.math import Vector2
 from pygame.transform import rotozoom
 
-from utils import gerar_velocidade_aleatoria, carregar_som, carregar_sprite, wrap_position
+from utils import gerar_velocidade_aleatoria, carregar_som, carregar_sprite, wrap_posicao
 
 UP = Vector2(0, -1)
 
@@ -24,7 +24,7 @@ class GameObject:
         return distance < self.radius + other_obj.radius
 
     def move(self, surface):
-        self.position = wrap_position(self.position + self.velocity, surface)
+        self.position = wrap_posicao(self.position + self.velocity, surface)
 
 
 class Spaceship(GameObject):
