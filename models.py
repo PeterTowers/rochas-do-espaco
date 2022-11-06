@@ -1,93 +1,93 @@
 from pygame.math import Vector2
 from pygame.transform import rotozoom
 
-from utils import gerar_velocidade_aleatoria, carregar_som, carregar_sprite, wrap_posicao
+from utils import get_random_velocidade, carregar_sound, carregar_sprite, wrap_posicao
 
 UP = Vector2(0, -1)
 
 class GameObject:
-    def __init__(self, position, sprite, velocity):
-        self.position = Vector2(position)
+    def __init__(self, posicao, sprite, velocidade):
+        self.posicao = Vector2(posicao)
         self.sprite = sprite
         self.radius = sprite.get_width() / 2
-        self.velocity = Vector2(velocity)
+        self.velocidade = Vector2(velocidade)
 
-    def draw(self, surface):
-        blit_position = self.position - Vector2(self.radius)
-        surface.blit(self.sprite, blit_position)
+    def draw(self, superficie):
+        blit_posicao = self.posicao - Vector2(self.radius)
+        superficie.blit(self.sprite, blit_posicao)
 
     def move(self):
-        self.position = self.position + self.velocity
+        self.posicao = self.posicao + self.velocidade
 
-    def collides_with(self, other_obj):
-        distance = self.position.distance_to(other_obj.position)
-        return distance < self.radius + other_obj.radius
+    def collides_with(self, outro_obj):
+        distancia = self.posicao.distancia(outro_obj.posicao)
+        return distancia < self.radius + outro_obj.radius
 
-    def move(self, surface):
-        self.position = wrap_posicao(self.position + self.velocity, surface)
-
-
-class Spaceship(GameObject):
-    MANEUVERABILITY = 3
-    ACCELERATION = 0.25
-    BULLET_SPEED = 3
-
-    def __init__(self, position, create_bullet_callback):
-        self.create_bullet_callback = create_bullet_callback
-        self.laser_sound = carregar_som('laser')
-        self.direction = Vector2(UP)
-        super().__init__(position, carregar_sprite('spaceship'), Vector2(0))
+    def move(self, superficie):
+        self.posicao = wrap_posicao(self.posicao + self.velocidade, superficie)
 
 
-    def rotate(self, clockwise=True):
-        sign = 1 if clockwise else -1
-        angle = self.MANEUVERABILITY * sign
-        self.direction.rotate_ip(angle)
+class NaveEspacial(GameObject):
+    MANOBRABILIDADE = 3
+    ACELERACAO = 0.25
+    VELOCIDADE_BALA = 3
+
+    def __init__(self, posicao, criar_retorno_bala):
+        self.criar_retorno_bala = criar_retorno_bala
+        self.laser_sound = carregar_sound('laser')
+        self.direcao = Vector2(UP)
+        super().__init__(posicao, carregar_sprite('spaceship'), Vector2(0))
 
 
-    def draw(self, surface):
-        angle = self.direction.angle_to(UP)
-        rotated_surface = rotozoom(self.sprite, angle, 1.0)
-        rotated_surface_size = Vector2(rotated_surface.get_size())
-        blit_position = self.position - rotated_surface_size * 0.5
-        surface.blit(rotated_surface, blit_position)
+    def rotacao(self, sentidohorario=True):
+        sign = 1 if sentidohorario else -1
+        angulo = self.MANOBRABILIDADE * sign
+        self.direcao.rotacao_ip(angulo)
+
+
+    def draw(self, superficie):
+        angulo = self.direcao.angulo_to(UP)
+        rotacaod_superficie = rotozoom(self.sprite, angulo, 1.0)
+        rotacaod_superficie_tamanho = Vector2(rotacaod_superficie.get_tamanho())
+        blit_posicao = self.posicao - rotacaod_superficie_tamanho * 0.5
+        superficie.blit(rotacaod_superficie, blit_posicao)
 
 
     def accelerate(self):
-        self.velocity += self.direction * self.ACCELERATION
+        self.velocidade += self.direcao * self.ACELERACAO
 
     
     def shoot(self):
-        bullet_velocity = self.direction * self.BULLET_SPEED + self.velocity
-        bullet = Bullet(self.position, bullet_velocity)
-        self.create_bullet_callback(bullet)
+        tiro_velocidade = self.direcao * self.VELOCIDADE_BALA + self.velocidade
+        tiro = tiro(self.posicao, tiro_velocidade)
+        self.criar_retorno_bala(tiro)
         self.laser_sound.play()
 
 
-class Asteroid(GameObject):
+class Asteroide(GameObject):
     MASSA = 3000
 
-    def __init__(self, position, create_asteroid_callback, size=3):
-        self.create_asteroid_callback = create_asteroid_callback
+    def __init__(self, posicao, criar_asteroide_callback, tamanho=3):
+        self.criar_asteroide_callback = criar_asteroide_callback
 
-        self.size = size
-        size_to_scale = {3: 1, 2: 0.5, 1: 0.25,}
-        scale = size_to_scale[size]
+        self.tamanho = tamanho
+        tamanho_escala = {3: 1, 2: 0.5, 1: 0.25,}
+        escala = tamanho_escala[tamanho]
 
-        sprite = rotozoom(carregar_sprite('asteroid'), 0, scale)
+        sprite = rotozoom(carregar_sprite('asteroide'), 0, escala)
 
-        super().__init__(position, sprite, gerar_velocidade_aleatoria(1, 3))
+        super().__init__(posicao, sprite, get_random_velocidade(1, 3))
 
     def split(self):
-        if self.size > 1:
+        if self.tamanho > 1:
             for _ in range(2):
-                asteroid = Asteroid(self.position, self.create_asteroid_callback, self.size-1)
-                self.create_asteroid_callback(asteroid)
+                asteroide = asteroide(self.posicao, self.criar_asteroide_callback, self.tamanho-1)
+                self.criar_asteroide_callback(asteroide)
 
 
-class Bullet(GameObject):
-    def __init__(self, position, velocity):
-        super().__init__(position, carregar_sprite('bullet'), velocity)
+class Tiro(GameObject):
+    def __init__(self, posicao, velocidade):
+        super().__init__(posicao, carregar_sprite('bullet'), velocidade)
 
-    def move(self, surface):
-        self.position = self.position + self.velocity
+    def move(self, superficie):
+        self.posicao = self.posicao + self.velocidade
